@@ -2,7 +2,6 @@
  * @lc app=leetcode.cn id=2 lang=cpp
  *
  * [2] 两数相加
- *
  * https://leetcode-cn.com/problems/add-two-numbers/description/
  *
  * algorithms
