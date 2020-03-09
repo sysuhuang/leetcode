@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 /*
  * @lc app=leetcode.cn id=112 lang=java
  *
@@ -45,15 +47,34 @@ class Solution {
     public boolean hasPathSum(TreeNode root, int sum) {
         if(root == null)
             return false;
-        return helper(root,sum);
+        Stack<TreeNode> node_stack = new Stack<>();
+        Stack<Integer> num_stack = new Stack<>();
+        node_stack.push(root);
+        num_stack.push(sum - root.val);
+        while(!node_stack.isEmpty()){
+            TreeNode node = node_stack.pop();
+            int num = num_stack.pop();
+            if(num == 0 && isleaf(node))
+                return true;
+            if(node.left != null){
+                node_stack.push(node.left);
+                num_stack.push(num - node.left.val);
+            }
+            if(node.right != null){
+                node_stack.push(node.right);
+                num_stack.push(num - node.right.val);
+            }
+        }
+        return false;
+
+        
     }
-    private boolean helper(TreeNode node,int sum){
-        if(node == null)
-            return false;
-        if(sum == node.val && node.left == null && node.right == null)
+    private boolean isleaf(TreeNode node){
+        if(node.left == null && node.right == null)
             return true;
-        return helper(node.left, sum - node.val) || helper(node.right, sum - node.val);
+        return false;
     }
+
 }
 // @lc code=end
 
