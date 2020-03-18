@@ -1,5 +1,5 @@
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 
 /*
  * @lc app=leetcode.cn id=113 lang=java
@@ -49,7 +49,8 @@ class TreeNode {
     TreeNode right;
     TreeNode(int x) { val = x; }
 }
-
+/* 
+//recursion
 class Solution {
     LinkedList<List<Integer>> res = new LinkedList<>();
     LinkedList<Integer> list = new LinkedList<>();
@@ -76,6 +77,83 @@ class Solution {
             return true;
         return false;
     }
+} */
+
+//iteration
+class Solution {
+    LinkedList<List<Integer>> res = new LinkedList<>();
+    LinkedList<Integer> list = new LinkedList<>();
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        if(root == null)
+            return res;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                stack.push(root);
+                list.offer(root.val);
+                sum -= root.val;
+                root = root.left;              
+            }
+            TreeNode node = stack.peek();
+            if(isleaf(node) && sum == 0)
+                res.offer(new LinkedList<>(list));
+            if(node.right == null || node.right == prev){
+                stack.pop();
+                list.pollLast();
+                prev = node;
+                sum += node.val;
+            }
+            else
+                root = node.right;
+        }
+        return res;
+
+    }
+
+    private boolean isleaf(TreeNode node){
+        if(node.left == null && node.right == null)
+            return true;
+        return false;
+    }
 }
+/* class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {  
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null)
+            return res;
+        //存储节点
+        Stack<Pair<TreeNode, Integer>> stack = new Stack<Pair<TreeNode, Integer>>();
+        stack.push(new Pair<TreeNode, Integer>(root, sum - root.val));
+        //存储路径
+        Stack<List<Integer>> num_stack = new Stack<>();
+        List<Integer> list = new ArrayList<>();
+        list.add(root.val);
+        num_stack.push(list);
+
+        while ( !stack.isEmpty() ) {
+            Pair<TreeNode, Integer> top = stack.pop();
+            TreeNode node = top.getKey();
+            int curr_sum = top.getValue();
+            List<Integer> num_list = num_stack.pop();
+            if ((node.right == null) && (node.left == null) && (curr_sum == 0))
+                res.add(num_list);
+            if (node.right != null) {
+                stack.push(new Pair<TreeNode, Integer>(node.right, curr_sum - node.right.val));
+                List<Integer> right_list = new ArrayList<>(num_list); //一定要重新拷贝一份再存入
+                right_list.add(node.right.val);
+                num_stack.push(right_list);
+            }
+            if (node.left != null) {
+                stack.push(new Pair<TreeNode, Integer>(node.left, curr_sum - node.left.val));
+                List<Integer> left_list = new ArrayList<>(num_list); //一定要重新拷贝一份再存入
+                left_list.add(node.left.val);
+                num_stack.push(left_list);
+            }
+        }
+        return res;
+    }
+} */
+
 // @lc code=end
 

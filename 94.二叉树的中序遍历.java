@@ -89,19 +89,14 @@ class Solution {
         if(root == null)
             return list;
         TreeNode cur = root;
-        stack.push(root);
-        while(!stack.isEmpty()){
-            while(cur.left != null){
-                stack.push(cur.left);
+        while(cur != null || !stack.isEmpty()){
+            while(cur != null){
+                stack.push(cur);
                 cur = cur.left;
             }
             TreeNode node = stack.pop(); 
             list.add(node.val);
-            if(node.right != null){
-                cur = node.right;
-                stack.push(cur);
-            }
-
+            cur = node.right;
 
         }
         return list;
