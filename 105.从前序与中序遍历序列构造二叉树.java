@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.HashMap;
 
 /*
  * @lc app=leetcode.cn id=105 lang=java
@@ -44,20 +45,62 @@ class TreeNode {
 }
 
 
-
+/* 
 class Solution {
+    HashMap<Integer,Integer> map = new HashMap<>();
     public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+    for(int i=0;i<inorder.length;i++)
+        map.put(inorder[i],i);
+
+    return helper(preorder,inorder);
+    }
+
+    public TreeNode helper(int[] preorder, int[] inorder){
         if(preorder.length == 0)
             return null;
         int pre = preorder[0];
         int index = 0;
-        TreeNode node = new TreeNode(pre);
-        while(inorder[index] != pre)
-            index++;
+        if(map.containsKey(pre))
+            index = map.get(pre);
+        else
+            index = inorder.length;
         
-        node.left = buildTree(Arrays.copyOfRange(preorder, 1, index+1), Arrays.copyOfRange(inorder, 0, index));
-        node.right = buildTree(Arrays.copyOfRange(preorder, index+1, preorder.length), Arrays.copyOfRange(inorder, index+1, inorder.length));
+
+
+        TreeNode node = new TreeNode(pre);   
+
+
+        node.left = helper(Arrays.copyOfRange(preorder, 1, index+1), Arrays.copyOfRange(inorder, 0, index));
+        node.right = helper(Arrays.copyOfRange(preorder, index+1, preorder.length), Arrays.copyOfRange(inorder, index+1, inorder.length));
         return  node;
+    }
+
+}
+ */
+class Solution {
+    private HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+    private int [] preorder;
+    private int [] inorder;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        this.preorder = preorder;
+        this.inorder = inorder;
+        int idx = 0;
+        for (Integer val : inorder)
+          map.put(val, idx++);
+        return helper(0,preorder.length,0,inorder.length);     
+    }
+
+    public TreeNode helper(int pre_index, int pre_index2, int in_index, int in_index2){
+        if(pre_index == pre_index2 && in_index == in_index2)
+            return null;
+            
+        int value = preorder[pre_index];
+        TreeNode node = new TreeNode(value);
+        int index = map.get(value);
+        node.left = helper(pre_index+1, pre_index+1+index-in_index, in_index, index);
+        node.right = helper(pre_index+1+index-in_index, pre_index2, index+1, in_index2);
+        return node;
     }
 }
 // @lc code=end
